@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <style type="text/css">
+            body{
+                margin: 0;
+                padding: 0;
+                background-image: url(images/仙剑1.jpg);
+            }
+            #bnt{
+                width: 138px;
+                height: 127px;
+                background-image: url(images/start.png);
+                position: absolute;
+                top: 250px;
+                left: 1000px;
+            }
+            #bnt:hover{
+                background-image: url(images/starth.png);
+            }
+            @-webkit-keyframes rotate{
+                from{-webkit-transform: rotateZ(0deg);}
+                /*50%{-webkit-transform: rotateZ(360deg);}*/
+                to{-webkit-transform: rotateZ(360deg);}
+            }
+            .shake{
+                -webkit-animation: rotate 2s linear infinite both;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="bnt"></div>
+        <audio id="mp3" loop src="images/仙剑奇侠传 - 莫失莫忘.mp3"></audio>
+    </body>
+    <script type="text/javascript">
+        var oBnt = document.getElementById('bnt');
+        var oMp3 = document.getElementById('mp3');
+        var oSong = document.getElementById('song');
+        var oSongs = oSong.getElementsByTagName('li');
+        var bol = false;
+        oBnt.onclick = function(){
+            bol = !bol;
+           if (bol) {
+                oMp3.play();
+                rotas();
+                ss();
+           }else{
+                oMp3.pause();
+                rota();
+           }
+           // rotares(); 
+        }
+        function rotas(){
+            oBnt.className = 'shake';
+        }
+        function rota(){
+            oBnt.className = '';
+        }
+        
+    </script>
+</html>
