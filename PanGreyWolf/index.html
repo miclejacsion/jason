@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	*{
+		margin:0;padding: 0;font-family: '微软雅黑';
+	}
+	#main{
+		width: 320px;
+		height: 480px;
+		margin:auto;
+		position: relative;
+		background-image: url('game_bg.jpg');
+	}
+	#score{
+		color: white;
+		font-size: 20px;
+
+		position: absolute;
+		left:60px;
+		top: 10px;
+	}
+	#progress{
+		width: 180px;
+		height: 16px;
+		background-image: url('progress.png');
+
+		position: absolute;
+		left: 63px;
+		top: 66px;
+	}
+	#wolfs img{
+		position: absolute;
+	}
+	#menu,#gameOver{
+		width: 320px;
+		height: 100px;
+		color: #ff6c00;
+		font-size: 30px;
+		text-align: center;
+		font-weight: bold;
+		text-shadow: yellow 1px 1px;
+
+		position: absolute;
+		left:0;
+		top: 200px;
+	}
+	#gameOver{
+		display: none;
+	}
+	</style>
+
+	<script type="text/javascript">
+	window.onload = function(){
+		var oMain = document.getElementById('main');
+		var oScore = document.getElementById('score');
+		var oProgress = document.getElementById('progress');
+		var oWolfs = document.getElementById('wolfs');
+		var oMenu = document.getElementById('menu');
+		var oStart = document.getElementById('start');
+		var oIntro = document.getElementById('intro');
+		var oGameOver = document.getElementById('gameOver');
+
+		var score = 0;
+		// scrollWidth,offsetWidth,clientWidth
+		var progress = oProgress.offsetWidth;
+		var progressTimer = null;
+		var showTimer = null;
+
+		oStart.onclick = function(){
+			//oMenu.style.display = 'none';
+			this.parentNode.style.display = 'none';
+			// 注意！！！
+			//console.log(this.offsetParent);
+
+			// 开始游戏
+			progressTimer = setInterval(function(){
+				progress--;
+				fnProgress(progress);
+
+			}, 200);
+			//灰太狼随机出现的位置
+			var arrPos=[{l:"98px",t:"115px"},{l:"17px",t:"160px"},{l:"15px",t:"220px"},{l:"30px",t:"293px"},{l:"122px",t:"273px"},{l:"207px",t:"295px"},{l:"200px",t:"211px"},{l:"187px",t:"141px"},{l:"100px",t:"185px"}];
+
+			//开始出现灰太狼
+			showTimer = setInterval(function(){
+				//创建一个图片
+				var oImg = document.createElement('img');
+				//决定是H还是X
+				var r = (fnRand(1,100) > 80)?'x':'h';
+				oImg.flag = r;
+				oImg.index = 0;
+				oImg.src = oImg.flag+'0.png';
+				wolfs.appendChild(oImg);
+
+				//定位
+				var bol = true;
+				//可用位置
+				var usedIndex = 0;
+				var imgArr = oWolfs.children;
+				while(bol){
+					usedIndex = fnRand(0,arrPos.length-1);
+					for (var i = 0; i < imgArr.length; i++) {
+						if (imgArr[i].offsetLeft==parseInt(arrPos[usedIndex].l)) {
+							break;
+						}
+					}
+					if (i == imgArr.length) {
+						bol = false;
+					}
+				}
+
+				oImg.style.left = arrPos[usedIndex].l;
+				oImg.style.top = arrPos[usedIndex].t;
+			
+				//向上的动画
+				oImg.upAniTimer = setInterval(function(){
+					oImg.index++;
+					if (oImg.index>=5) {
+						clearInterval(oImg.upAniTimer);
+						oImg.upAniTimer = null;
+					}
+					oImg.src = oImg.flag + oImg.index + '.png';
+ 				}, 50)
+
+ 				//向下的动画
+ 				oImg.waitAniTimer = setTimeout(function(){
+ 					oImg.downAniTimer = setInterval(function(){
+	 					oImg.index--;
+	 					if (oImg.index <=0) {
+	 						clearInterval(oImg.downAniTimer);
+							oImg.downAniTimer = null;
+							oWolfs.removeChild(oImg);
+	 					}
+	 					oImg.src = oImg.flag + oImg.index + '.png';
+ 					}, 50)
+ 				}, 750)
+
+ 				//打击事件
+ 				oImg.onclick = function(){
+ 					fnScore(this.flag);
+ 					oImg.index = 6;
+
+ 					clearInterval(this.upAniTimer);
+ 					clearInterval(this.waitAniTimer);
+ 					clearInterval(this.downAniTimer);
+
+ 					oImg.attachAniTimer = setInterval(function(){
+ 						oImg.index++;
+ 						if (oImg.index > 9) {
+ 							oWolfs.removeChild(oImg);
+ 							clearInterval(oImg.attachAniTimer);
+ 						}
+ 						oImg.src = oImg.flag + oImg.index + '.png';
+ 					}, 50)
+ 				}
+			
+ 			}, 500)
+		}
+
+
+
+		/*
+		description:随机函数
+		params	   :[min,max]
+		*/
+		function fnRand(min,max){
+			var r = parseInt(Math.random()*(max-min+1)+min);
+			return r;
+		}
+
+		/*
+		desc:计分函数
+		params:name(h:灰太狼 | x:小灰灰)
+		*/
+		function fnScore(name){
+			if (name == 'h') {
+				score += 10;
+			}
+			else{
+				score -= 10;
+			}
+			oScore.innerHTML = score;
+		}
+
+		/*
+		desc:进度
+		*/
+		function fnProgress(num){
+			if (num <= 0) {
+					clearInterval(progressTimer);
+					progressTimer = null;
+
+					clearInterval(showTimer);
+					showTimer = null;
+
+					oGameOver.style.display = 'block';
+					var info = "Game Over <Br /> 你的分数 "+score+' 分！';
+					oGameOver.innerHTML = info;
+				}
+
+				oProgress.style.width = num + 'px';
+		}
+
+
+
+
+
+
+
+
+
+
+	}
+
+	</script>
+</head>
+<body>
+	<div id="main">
+		<div id="score">0</div>
+		<div id="progress"></div>
+		
+		<div id="wolfs">
+
+		</div>
+			
+		<div id="menu">
+			<div id="start">开始</div>
+			<div id="intro">游戏说明</div>
+		</div>
+
+		<div id="gameOver">Game Over! <br />
+		你的得分是 0 分
+		</div>
+
+	</div>
+</body>
+</html>
