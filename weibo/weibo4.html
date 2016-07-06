@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style type="text/css">
+	*{
+		margin:0;
+		padding: 0;
+	}
+	#main{
+		width: 470px;
+		margin:0px auto;
+		background-color: #f5f5f5;
+		border: 1px lightgray solid;
+	}
+	#box{
+		padding: 10px;
+	}
+	#box input{
+		width: 80%;
+		margin-left:5px; 
+		margin-bottom: 10px;
+	}
+	#box span{
+		vertical-align: top;
+	}
+	#box textarea{
+		width: 80%;
+		margin-left:5px;
+		vertical-align: top;
+	}
+	#box #send{
+		width: 100px;
+		height: 30px;
+		margin-top: 10px;
+		/*position: relative;
+		left:40px;*/
+		margin-left: 45px;
+	}
+	ul li{
+		list-style: none;
+		margin:10px;
+		overflow: hidden;
+		/*border: 1px red solid;*/
+	}
+	li h3{
+		background-color: #CCC;
+		border-bottom: 1px gray solid;
+		padding: 10px;
+	}
+	li div{
+		background-color: white;
+		border-bottom: 1px lightgray solid;
+		padding: 15px;
+		text-indent: 2em;
+	}
+	.a{
+		float: right;
+        color: red;
+        cursor: pointer;
+	}
+    #send{
+        cursor: pointer;
+    }
+    #num{
+        float: right;
+        display: inline-block;
+        margin:20px 0;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+	</style>
+</head>
+<body>
+	<div id="main">
+		<div id="box">
+			标题:<input id='title' type="text" />
+			<br>
+			<span>内容:</span><textarea name="" id="content" cols="30" rows="10"></textarea>
+			<br>
+			<input id='send' type="submit" value='提交'/>
+			<span id='num'>150</span>
+		</div>
+		<div id="msg">
+			<h2>显示留言</h2>
+			<ul id='list'>
+			</ul>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="tween.js"></script>
+	<script type="text/javascript">
+		var oTitle = document.getElementById('title');
+		var oContent = document.getElementById('content');
+		var oSend = document.getElementById('send');
+		var oMsg = document.getElementById('msg');
+		var oList = document.getElementById('list');
+		var oNum = document.getElementById('num');
+
+		oSend.onclick = function(){
+			if (oTitle.value.length == 0 || oContent.value.length==0) {
+				alert('信息不能为空');
+				return;
+			}
+
+			// <li>
+			// 		<h3>dddd</h3>
+			// 		<div>大大大 <a href="">删除</a></div>
+			// 	</li>
+
+			var li = document.createElement('li');
+            var a = document.createElement('a');
+            a.className = 'a';
+            a.innerText = "删除";
+            
+            li.innerHTML = "<h3>"+oTitle.value+"</h3><div>"+oContent.value+"</div>"+a;
+			oList.appendChild(li);
+            li.appendChild(a);
+
+
+			// animation
+			//tween.js
+			var step = 0;
+			var maxstep = 30;
+			var start = 0;
+			// 获取Dom元素的高度
+			var end = li.offsetHeight;
+			//console.log(end);
+			var change = end - start;
+			li.style.height = Tween.Bounce.easeInOut(step,start,change,maxstep)+'px';
+			li.timer = setInterval(function(){
+				step++;
+				if (step >= maxstep) {
+					clearInterval(li.timer);
+				}
+				li.style.height = Tween.Bounce.easeOut(step,start,change,maxstep)+'px';
+			},30);
+
+
+			// 删除
+			li.addEventListener('click', function(e){
+				console.log(a);
+				// 判断点击的是不是a
+				// mouse event
+				var e = e || window.event;
+				if(e.target == a){
+                    // oList.removeChild(self);
+					var step = 0;
+					var maxstep = 30;
+					var start = this.offsetHeight;
+					var end = 0;
+					var change = -start;
+					this.style.height = Tween.Bounce.easeOut(step,start,change,maxstep)+'px';
+					//console.log(oLi.style.height);
+					var self = this;
+					this.timer = window.setInterval(function(){
+						//console.log(this);
+						step++;
+						if(step>=maxstep){
+							oList.removeChild(self);
+							clearInterval(self.timer);
+						}
+						self.style.height = Tween.Bounce.easeOut(step,start,change,maxstep)+'px';
+
+					},30);
+				}
+
+			}, false);
+
+		}
+
+		document.onkeyup = function(e)
+		{
+			var e = e || window.event;
+			
+			if(e.ctrlKey && e.keyCode == 13){
+				console.log('submit');
+				send.click();
+			}
+		}
+
+		// 字数统计
+		var maxNum = 150;
+		var n = 0;
+		oContent.oninput = function(){
+			n = maxNum - this.value.length;
+			num.innerHTML = n;
+			if (this.value.length>=150) {
+				
+				num.style.color = 'red';
+                alert("客观,已达到最大值");  
+			}
+			else{
+				num.style.color = 'green';
+			}
+		}
+
+
+	</script>
+</body>
+</html>
