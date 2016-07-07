@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>更新</title>
+	<script type="text/javascript" src="tween.js"></script>
+	<style type="text/css">
+	#wrap{
+		width: 320px;
+		height: 480px;
+		margin: auto;
+		position: relative;
+	}
+	#main{
+		background-image: url(images/watermelon_bg.png);
+		width: 320px;
+		height: 480px;
+		position: absolute;
+	}
+	ul,li{list-style: none;}
+	ul li{
+		position: absolute;
+		z-index: 2;
+	}
+		ul li:nth-child(1){
+		left: 245px;top: 20px;
+	}
+	ul li:nth-child(2){
+		left: 180px;top: -6px;
+	}
+	ul li:nth-child(3){
+		left: 18px;top: 0px;
+	}
+	ul li:nth-child(4){
+		left: 95px;top: 45px;
+	}
+	ul li:nth-child(5){
+		left: 168px;top: 80px;
+	}
+	ul li:nth-child(6){
+		left: 236px;top: 111px;
+	}
+	ul li:nth-child(7){
+		left: 10px;top: 105px;
+	}
+	ul li:nth-child(8){
+		left: 86px;top: 140px;
+	}
+	ul li:nth-child(9){
+		left: 158px;top: 175px;
+	}
+	ul li:nth-child(10){
+		left: 229px;top: 207px;
+	}
+	#bottom{
+		width: 320px;
+		height: 480px;
+		position: absolute;
+		overflow: hidden;
+		top: 0px;
+		/*z-index: -1;*/
+	}
+	#bottom img{
+		position: absolute;
+		cursor: pointer;
+	}
+	#bottom img:nth-child(1){
+		left: 0px;
+		top: 240px;
+	}
+	#bottom img:nth-child(2){
+		left: 150px;
+		top: 280px;
+		cursor: auto;
+	}
+	#bottom img:nth-child(3){
+		left: 220px;
+		top: 300px;
+		cursor: auto;
+	}
+	#bottom img:nth-child(4){
+		left: 150px;
+		top: 355px;
+		cursor: auto;
+	}
+	#bottom img:nth-child(5){
+		left: 25px;
+		top: 435px;
+	}
+	#bottom img:nth-child(6){
+		left: 200px;
+		top: 450px;
+	}
+	#bottom img:nth-child(7){
+		left: 220px;
+		top: 390px;
+	}
+	#end{
+		position: absolute;
+		top: 146px;
+		display: none;
+		z-index: 4;
+	}
+	#end img:nth-child(2){
+		position: absolute;
+		top: 100px;
+		left: 200px;
+		cursor: pointer;
+	}
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="main">
+			<ul id="ul">
+				<li><img src="images/watermelon.png" alt=""></li>
+				<li><img src="images/watermelon.png" alt=""></li>
+				<li><img src="images/watermelon.png" alt=""></li>
+				<li><img src="images/watermelon.png" alt=""></li>
+				<li><img src="images/watermelon.png" alt=""></li>
+				<li><img src="images/watermelon.png" alt=""></li>
+				<li><img src="images/watermelon.png" alt=""></li>
+				<li><img src="images/watermelon.png" alt=""></li>
+				<li><img src="images/watermelon.png" alt=""></li>
+				<li><img src="images/watermelon.png" alt=""></li>
+			</ul>
+			<div id="bottom">
+				<img id="elephent" src="images/elephent1.png" alt="">
+				<img src="images/watermelon_dialog.png" alt="">
+				<img id="num" src="" alt="">
+				<img id="basket" src="images/bascket_w.png" alt="">
+				<img id="done" src="images/done1.png" alt="">
+				<img id="back" src="images/back1.png" alt="">
+				<img id="sum" src="" alt="">
+			</div>
+		</div>
+		<div id="end">
+			<img id="result_1" src="images/right-bg.png" alt="">
+			<img id="result_2" src="images/bt_Next.png" alt="">
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var oMain = document.getElementById('main');
+
+	//游戏界面弹性下降-变量
+	var step = 0;
+	var stepMax = 30;
+	var startPos = -oMain.offsetHeight;
+	var endPos = 0;
+	var change = endPos - startPos;
+	
+	//游戏界面弹性下降-函数
+	oMain.timer = setInterval(function() {
+		step++;
+		if (step >= stepMax) {
+			clearInterval(oMain.timer);
+			oMain.timer = null;
+		};
+		oMain.style.top = Tween.Bounce.easeOut(step,startPos,change,stepMax) + 'px';
+	}, 30);
+
+	var num = fnRound(1,10);//获取随机西瓜数
+	var oNum = document.getElementById('num');
+	oNum.src = 'images/' + num + '.png';
+
+	//获取大象、done、back、
+	var oElephent = document.getElementById('elephent');
+	var oBack = document.getElementById('back');
+	var oDone = document.getElementById('done');
+	var oBasket = document.getElementById('basket');
+	var oSum = document.getElementById('sum');
+	var mark = true;
+	var timer = null;//闪闪计时器
+
+	//大象、done、back的闪闪
+	timer = setInterval(function(){
+		if(mark){
+			oElephent.src = "images/elephent2.png";
+			oDone.src = 'images/done2.png';
+			oBack.src = 'images/back2.png';
+			mark = false;
+		}else{
+			oElephent.src = "images/elephent1.png";
+			oDone.src = 'images/done1.png';
+			oBack.src = 'images/back1.png';
+			mark = true;
+		}
+	}, 500);
+
+	//结果的闪闪
+
+	//西瓜拖拽
+	var oUl = document.getElementById('ul');
+	var oLis = oUl.children;
+	var count = 0;
+	var sX;
+	var sY;
+	var delX;
+	var delY;
+
+	// console.log(oLis);
+
+	//添加鼠标单击
+	for(var i = 0; i < oLis.length; i++) {
+		oLis[i].onmousedown = function(e){
+			//阻止浏览器默认事件
+			if (e && e.preventDefault) {
+				e.preventDefault();
+			}else {
+				window.event.returnValue = false;
+			};
+
+			var oSelf = this;
+			var e = e || window.event;
+
+			sX = e.clientX - oSelf.offsetLeft;
+			sY = e.clientY - oSelf.offsetTop;
+
+			document.onmousemove = function(e){
+				var e = e || window.event;
+				delX = e.clientX - sX;
+				delY = e.clientY - sY;
+
+				oSelf.style.left = delX + 'px';
+				oSelf.style.top = delY + 'px';
+
+				//判断水果篮变色
+				if (delX>100 && delY>315 && delY<450 && count==0) {
+					oBasket.src = 'images/bascket_w_glow.png';
+				}
+			}
+
+			oSelf.onmouseup = function(){
+				document.onmousemove = null;
+				if (e && e.preventDefault) {
+					e.preventDefault();
+				}else {
+					window.event.returnValue = false;
+				};
+				//水果篮
+				if (delX>130 && delY>315 && delY<450) {
+					oSelf.style.display = 'none';
+					count++;
+					oBasket.src = 'images/bascket_w' + count + '.png';
+					
+					oSum.style.display = 'block';
+					oSum.src = 'images/' + count + 'a.png';
+				};
+			}
+		}
+	}
+
+
+	//判断结果
+	var oEnd = document.getElementById('end');
+	var oResult_1 = document.getElementById('result_1');
+	var oResult_2 = document.getElementById('result_2');
+
+	oDone.onclick = function() {
+		var result = null;
+
+		if (count == num) {
+			oResult_1.src = 'images/right-bg.png';
+			oResult_2.src = 'images/bt_Next.png';
+
+			oResult_2.timer	= setInterval(function(){
+				if (result) {
+					oResult_2.src = 'images/bt_Next2.png';
+					result = false;
+				}else {
+					oResult_2.src = 'images/bt_Next.png';
+					result = true;
+				};
+			}, 500);
+		}else {
+			oResult_1.src = 'images/wrong-bg.png';
+			oResult_2.src = 'images/try_again.png';
+
+			oResult_2.timer	= setInterval(function(){
+				if (result) {
+					oResult_2.src = 'images/try_again2.png';
+					result = false;
+				}else {
+					oResult_2.src = 'images/try_again.png';
+					result = true;
+				};
+			}, 500);
+		};
+
+		oEnd.style.display = 'block';
+	}
+
+	//测试结果，重新开始
+	oResult_2.onclick = function() {
+		oEnd.style.display = 'none';
+		document.location.reload();
+	}
+
+	//back to menu
+	oBack.onclick = function() {
+		window.location.href = 'index.html';
+	}
+
+
+	//随机函数fnRound产生[1,10]的数字
+	function fnRound(m,n){
+		var r = Math.round(Math.random()*(n-m) + m);
+		return r;
+	}
+
+
+</script>
+</html>

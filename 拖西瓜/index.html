@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>更新</title>
+	<script type="text/javascript" src="tween.js"></script>
+	<style type="text/css">
+	#wrap{
+		width: 320px;
+		height: 480px;
+		margin: auto;
+		position: relative;
+	}
+	#main{
+		background-image: url(images/default.png);
+		width: 320px;
+		height: 480px;
+		position: absolute;
+	}
+	#start{
+		position: absolute;
+		left: 22.5px;
+		top: 200.5px; 
+	}
+
+	</style>
+</head>
+<body>
+	<div id="wrap">
+		<div id="main">
+			<img id="start" src="images/melon.png" alt="">
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var oStart = document.getElementById('start');
+	var oMain = document.getElementById('main');
+	oStart.index = true;
+	oStart.timer = setInterval(function(){
+		if(oStart.index) {
+			oStart.src = 'images/melon2.png';
+			oStart.index = false;
+		}else {
+			oStart.src = 'images/melon.png';
+			oStart.index = true;
+		}
+	}, 500);
+
+	oStart.onclick = function() {
+		console.log('h');
+		window.location.href = 'play.html';
+	}
+
+	//游戏界面弹性下降-变量
+	var step = 0;
+	var stepMax = 30;
+	var startPos = -oMain.offsetHeight;
+	var endPos = 0;
+	var change = endPos - startPos;
+	//游戏界面弹性下降-函数
+	oMain.timer = setInterval(function() {
+		step++;
+		if (step >= stepMax) {
+			clearInterval(oMain.timer);
+			oMain.timer = null;
+		};
+		oMain.style.top = Tween.Bounce.easeOut(step,startPos,change,stepMax) + 'px';
+	}, 30);
+</script>
+</html>
